@@ -21,7 +21,7 @@ jobs:
           if [ $((DAY % 2)) -eq 0 ]; then
             COUNT=5
           else
-            COUNT=5
+            COUNT=6
           fi
 
           echo "count=$COUNT" >> $GITHUB_OUTPUT
