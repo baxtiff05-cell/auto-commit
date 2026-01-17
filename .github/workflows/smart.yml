@@ -1,0 +1,44 @@
+name: Smart Daily Commits (UTC)
+
+on:
+  schedule:
+    - cron: "0 0 * * *"   # Har kuni UTC 00:00
+  workflow_dispatch:
+
+jobs:
+  smart-commits:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Decide commit count (even=5, odd=6)
+        id: decide
+        run: |
+          DAY=$(date +%u)  # 1=Mon … 7=Sun
+
+          if [ $((DAY % 2)) -eq 0 ]; then
+            COUNT=5
+          else
+            COUNT=5
+          fi
+
+          echo "count=$COUNT" >> $GITHUB_OUTPUT
+
+      - name: Make commits
+        env:
+          GH_PAT: ${{ secrets.GH_PAT }}
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "baxtiff05-cell@users.noreply.github.com"
+
+          COUNT=${{ steps.decide.outputs.count }}
+
+          for i in $(seq 1 $COUNT); do
+            echo "Update $i: $(date -u)" >> activity-log.txt
+            git add activity-log.txt
+            git commit -m "Auto commit $i (UTC $(date -u '+%H:%M:%S'))" || echo "No changes"
+          done
+
+          git push https://$GH_PAT@github.com/baxtiff05-cell/auto-commit.git HEAD:main
