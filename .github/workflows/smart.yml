@@ -19,9 +19,9 @@ jobs:
           DAY=$(date +%u)  # 1=Mon … 7=Sun
 
           if [ $((DAY % 2)) -eq 0 ]; then
-            COUNT=5
+            COUNT=8
           else
-            COUNT=6
+            COUNT=8
           fi
 
           echo "count=$COUNT" >> $GITHUB_OUTPUT
